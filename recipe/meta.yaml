@@ -1,30 +1,31 @@
 {% set name = "azure-keyvault-keys" %}
-{% set version = "4.7.0" %}
+{% set version = "4.11.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.zip
-  sha256: f63740f5dc0d9b142d8ad65909f4a849ef549a20e86dff2ec322c13de0482d8c
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_')}}-{{ version }}.zip
+  sha256: f257b1917a2c3a88983e3f5675a6419449eb262318888d5b51e1cb3bed79779a
 
 build:
-  noarch: python
   number: 0
-  script: {{ PYTHON }} -m pip install . -vv
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  skip: true  # [py<39]
 
 requirements:
   host:
-    - python >=3.6
+    - python
     - pip
+    - wheel
+    - setuptools
   run:
-    - python >=3.6
-    - azure-common ~=1.1
-    - azure-core >=1.20.0,<2.0.0
+    - python
     - cryptography >=2.1.4
-    - msrest >=0.6.21
-    - six >=1.12.0
+    - isodate >=0.6.1
+    - azure-core >=1.31.0
+    - typing_extensions >=4.6.0
 
 test:
   imports:
@@ -34,11 +35,12 @@ test:
     - azure.keyvault.keys.crypto.aio
 
 about:
-  home: https://docs.microsoft.com/en-au/azure/key-vault/
+  home: https://docs.microsoft.com/en-au/azure/key-vault
   license: MIT
   license_family: MIT
   license_file: LICENSE.txt
   summary: Azure Key Vault Keys client library for Python
+  description: Azure Key Vault Keys client library for Python
   doc_url: https://azuresdkdocs.blob.core.windows.net/$web/python/azure-keyvault-keys/latest/azure.keyvault.keys.html
   dev_url: https://github.com/Azure/azure-sdk-for-python/tree/master/sdk/keyvault/azure-keyvault-keys
 
